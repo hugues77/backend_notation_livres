@@ -39,3 +39,38 @@ exports.afficherBookGet = (req, res, next) => {
   //on affiche le resultat ou la reponse
   //res.status(200).json(book);
 };
+
+//afficher un seul objet par son identifiant
+
+exports.afficherOneBookGet = (req, res, next) => {
+  Books.findOne({
+    _id: req.params.id,
+  })
+    .then((oneBook) => res.status(200).json(oneBook))
+    .catch((error) => res.status(404).json({ error }));
+};
+
+//Modifier un seul book
+exports.modifierOneBookPut = (req, res, next) => {
+  Books.updateOne(
+    {
+      _id: req.params.id,
+    },
+    { ...req.body, _id: req.params.id }
+  )
+    .then(() => res.status(200).json({ message: "Books modifier avec succès" }))
+    .catch((error) => res.status(400).json({ error }));
+};
+
+//supprimer un book
+exports.supprimerOneBookdelete = (req, res, next) => {
+  Books.deleteOne({
+    _id: req.params.id,
+  })
+    .then(() =>
+      res
+        .status(200)
+        .json({ message: "Les données sont supprimés avec plaisir !" })
+    )
+    .catch((error) => res.status(400).json({ error }));
+};
