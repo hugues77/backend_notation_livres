@@ -5,7 +5,6 @@ const { json } = require("body-parser");
 const Books = require("../models/book");
 
 const fs = require("fs");
-const { error } = require("console");
 
 //envoyer book
 exports.createBookPost = (req, res, next) => {
@@ -162,13 +161,31 @@ exports.supprimerOneBookdelete = (req, res, next) => {
 };
 
 //envoyez la note d'un book, tenir compte de userId
-exports.definirNoteBookpost = (req, res, next) => {};
+exports.definirNoteBookpost = (req, res, next) => {
+  const bookRating = req.body.rating;
+  // const userId = req.auth.userId;
+  const userId = "671a06cd40af4feb036e1ade";
+
+  Books.findOne({
+    _id: req.params.id,
+  })
+    .then((bookOne) => {
+      if (0 <= bookRating <= 5) {
+        //verifier si userId exist déjà dans le tableau
+      } else {
+        res.status(401).json({ message: "Choisir une note entre 0 et 5" });
+      }
+    })
+    .catch((error) => {
+      res.status(500).json({ error });
+    });
+};
 
 //afficher 3 livres qui ont la meilleurs notes moyennes
 exports.afficherThreeBookGet = (req, res, next) => {
-  const nbBooks = Books.length;
-  const allBooks = Books.find();
   Books.find()
-    .then(() => res.status(200).json("nombre des books: " + nbBooks))
-    .catch((error) => res.status(400).json({ message: "echec papa" }));
+    .sort({ averageRating: -1 })
+    .limit(3)
+    .then((treeBook) => res.status(200).json(treeBook))
+    .catch((error) => res.status(400).json({ error }));
 };

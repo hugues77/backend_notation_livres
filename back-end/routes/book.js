@@ -18,16 +18,21 @@ const multer = require("../middleware/multer-config");
 router.post("/", auth, multer, bookCtrl.createBookPost);
 
 //notre premier route en GET pour afficher les livres en GET
+
+//Tree Book - recommandations
+router.get("/bestrating", bookCtrl.afficherThreeBookGet);
+
+//All Books - accueil
 router.get("/", bookCtrl.afficherBookGet);
 
 //afficher un book avec son id
 router.get("/:id", bookCtrl.afficherOneBookGet);
 
 //afficher 3 livres qui ont la meilleurs notes moyennes
-router.get("/bestrating", bookCtrl.afficherThreeBookGet);
+// router.get("/bestrating", bookCtrl.afficherThreeBookGet);
 
 //envoyez la note pour un book
-router.post("/:id/rating", auth, bookCtrl.definirNoteBookpost);
+router.post("/:id/rating", bookCtrl.definirNoteBookpost);
 
 //modifier un book avec son id
 router.put("/:id", auth, multer, bookCtrl.modifierOneBookPut);
