@@ -5,6 +5,8 @@ const { json } = require("body-parser");
 const Books = require("../models/book");
 
 const fs = require("fs");
+const book = require("../models/book");
+const { error } = require("console");
 
 //envoyer book
 exports.createBookPost = (req, res, next) => {
@@ -162,23 +164,66 @@ exports.supprimerOneBookdelete = (req, res, next) => {
 
 //envoyez la note d'un book, tenir compte de userId
 exports.definirNoteBookpost = (req, res, next) => {
-  const bookRating = req.body.rating;
-  // const userId = req.auth.userId;
-  const userId = "671a06cd40af4feb036e1ade";
+  //recuperer les variables du tableau ratings
+  const userId = req.auth.userId;
+  const grade = parseInt(req.body.rating);
 
-  Books.findOne({
-    _id: req.params.id,
-  })
-    .then((bookOne) => {
-      if (0 <= bookRating <= 5) {
-        //verifier si userId exist déjà dans le tableau
-      } else {
-        res.status(401).json({ message: "Choisir une note entre 0 et 5" });
-      }
+  if (0 <= grade <= 5) {
+    //verifier si le livre (id) est bien dans la base
+    Books.findOne({
+      _id: req.params.id,
     })
-    .catch((error) => {
-      res.status(500).json({ error });
-    });
+      .then((bookOne) => {
+        const bookRatings = bookOne.ratings;
+
+        const userRating = bookRatings.find(
+          (rating) => rating.userId === userId
+        );
+
+        if (userRating) {
+          res.status(401).json({
+            message: "Vous aviez déjà publié une note pour ce livre !",
+          });
+        }
+        //preparer un nouveau tableau de rating
+        const newRatings = {
+          userId: userId,
+          grade: grade,
+        };
+        //on push le tableau dans BookOne
+        const result = bookRatings.push(newRatings);
+        if (result) {
+          bookOne.save();
+        }
+        //calcul de la moyenne des notes, on recupere toutes les notes
+        const arrayGrade = bookRatings.map((elt) => elt.grade);
+        const arrayNbre = arrayGrade.length;
+        const moyNotes = arrayGrade.reduce((acc, indexNote) => {
+          let sNotes = (acc += indexNote);
+          return sNotes;
+        });
+
+        const newAverageRating = Math.round(moyNotes / arrayNbre);
+        //mettre a jour averating pour le livre correspondant
+        const bookAverageRating = bookOne.averageRating;
+
+        // if (newAverageRating) {
+        //   Books.updateOne(
+        //     { _id: req.params.id },
+        //     { averageRating: newAverageRating }
+        //   )
+        //     .then((response) => res.status(200).json(response))
+        //     .catch((error) => res.status(400).json({ error }));
+        // }
+      })
+      .catch(() =>
+        res.status(500).json({ message: "Aucun livre trouvé dans la base" })
+      );
+  } else {
+    res
+      .status(500)
+      .json({ message: "La note doit etre comprise entre 0 et 5" });
+  }
 };
 
 //afficher 3 livres qui ont la meilleurs notes moyennes

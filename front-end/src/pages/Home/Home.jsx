@@ -13,7 +13,7 @@ function Home() {
 
   useEffect(() => {
     async function getBooksList() {
-      const data = await getBooks(); 
+      const data = await getBooks();
       if (data) {
         setBooks(data);
         setLoading(false);

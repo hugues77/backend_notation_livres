@@ -7,7 +7,7 @@ import { generateStarsInputs } from '../../../lib/functions';
 import { useFilePreview } from '../../../lib/customHooks';
 import addFileIMG from '../../../images/add_file.png';
 import styles from './BookForm.module.css';
-import { updateBook, addBook } from '../../../lib/common';     
+import { updateBook, addBook } from '../../../lib/common';
 
 function BookForm({ book, validate }) {
   const userRating = book ? book.ratings.find((elt) => elt.userId === localStorage.getItem('userId'))?.grade : 0;
@@ -16,7 +16,7 @@ function BookForm({ book, validate }) {
 
   const navigate = useNavigate();
   const {
-    register, watch, formState, handleSubmit, reset, 
+    register, watch, formState, handleSubmit, reset,
   } = useForm({
     defaultValues: useMemo(() => ({
       title: book?.title,

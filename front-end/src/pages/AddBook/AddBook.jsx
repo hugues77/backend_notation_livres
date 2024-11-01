@@ -14,7 +14,7 @@ function AddBook() {
   useEffect(() => {
     if (!userLoading) {
       if (!connectedUser || !auth) {
-        navigate(APP_ROUTES.SIGN_IN);  
+        navigate(APP_ROUTES.SIGN_IN);
       }
     }
   }, [userLoading]);
@@ -22,12 +22,12 @@ function AddBook() {
   return (
     <div className="content-container">
       <BackArrow />
-      <div className={styles.Container}>   
+      <div className={styles.Container}>
         {!created ? (
           <>
             <h1>Ajouter un livre</h1>
-            <p>tous les champs sont obligatoires</p>  
-            <BookForm validate={setCreated} />  
+            <p>tous les champs sont obligatoires</p>
+            <BookForm validate={setCreated} />
           </>
         ) : (
           <div className={styles.Created}>

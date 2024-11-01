@@ -32,7 +32,7 @@ router.get("/:id", bookCtrl.afficherOneBookGet);
 // router.get("/bestrating", bookCtrl.afficherThreeBookGet);
 
 //envoyez la note pour un book
-router.post("/:id/rating", bookCtrl.definirNoteBookpost);
+router.post("/:id/rating", auth, bookCtrl.definirNoteBookpost);
 
 //modifier un book avec son id
 router.put("/:id", auth, multer, bookCtrl.modifierOneBookPut);
