@@ -5,8 +5,8 @@ const { json } = require("body-parser");
 const Books = require("../models/book");
 
 const fs = require("fs");
-const book = require("../models/book");
-const { error } = require("console");
+// const book = require("../models/book");
+// const { error } = require("console");
 
 //envoyer book
 exports.createBookPost = (req, res, next) => {
@@ -190,11 +190,9 @@ exports.definirNoteBookpost = (req, res, next) => {
           userId: userId,
           grade: grade,
         };
-        //on push le tableau dans BookOne
-        const result = bookRatings.push(newRatings);
-        if (result) {
-          bookOne.save();
-        }
+        //on push la nouvelle note - tableau dans BookOne
+        bookRatings.push(newRatings);
+
         //calcul de la moyenne des notes, on recupere toutes les notes
         const arrayGrade = bookRatings.map((elt) => elt.grade);
         const arrayNbre = arrayGrade.length;
@@ -205,16 +203,12 @@ exports.definirNoteBookpost = (req, res, next) => {
 
         const newAverageRating = Math.round(moyNotes / arrayNbre);
         //mettre a jour averating pour le livre correspondant
-        const bookAverageRating = bookOne.averageRating;
+        bookOne.averageRating = newAverageRating;
+        bookOne
+          .save()
 
-        // if (newAverageRating) {
-        //   Books.updateOne(
-        //     { _id: req.params.id },
-        //     { averageRating: newAverageRating }
-        //   )
-        //     .then((response) => res.status(200).json(response))
-        //     .catch((error) => res.status(400).json({ error }));
-        // }
+          .then((response) => res.status(200).json(response))
+          .catch((error) => res.status(400).json({ error }));
       })
       .catch(() =>
         res.status(500).json({ message: "Aucun livre trouvé dans la base" })
