@@ -11,11 +11,15 @@ const bookCtrl = require("../controllers/book");
 
 //importe middleware muter pour gerer les images
 const multer = require("../middleware/multer-config");
+
+//sharp
+const resizeImage = require("../middleware/sharp-resize");
+
 //chemin de base: /api/books
 //notre route en POST, envoie des données
 
 // router.post("/", auth, bookCtrl.createBookPost);
-router.post("/", auth, multer, bookCtrl.createBookPost);
+router.post("/", auth, multer, resizeImage, bookCtrl.createBookPost);
 
 //notre premier route en GET pour afficher les livres en GET
 
@@ -35,7 +39,7 @@ router.get("/:id", bookCtrl.afficherOneBookGet);
 router.post("/:id/rating", auth, bookCtrl.definirNoteBookpost);
 
 //modifier un book avec son id
-router.put("/:id", auth, multer, bookCtrl.modifierOneBookPut);
+router.put("/:id", auth, multer, resizeImage, bookCtrl.modifierOneBookPut);
 
 //supprimer un book avec son id
 router.delete("/:id", auth, bookCtrl.supprimerOneBookdelete);

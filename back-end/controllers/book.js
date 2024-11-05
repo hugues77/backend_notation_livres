@@ -5,8 +5,6 @@ const { json } = require("body-parser");
 const Books = require("../models/book");
 
 const fs = require("fs");
-// const book = require("../models/book");
-// const { error } = require("console");
 
 //envoyer book
 exports.createBookPost = (req, res, next) => {

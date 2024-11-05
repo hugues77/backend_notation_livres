@@ -11,9 +11,13 @@ const storage = multer.diskStorage({
     callback(null, "images");
   },
   filename: (req, file, callback) => {
+    //test sans utiliser sharp
+
     // const name = file.originalname.split(" ").join("_");
     const extension = MIME_TYPES[file.mimetype];
     const name = Date.now() + "." + extension;
+    //utilisation de sharp
+
     callback(null, name);
   },
 });
